@@ -3,14 +3,16 @@ package utils
 import "os"
 
 type config struct {
-	MongoUri string `bson:"mongo_uri" json:"mongo_uri"`
-	Port string `bson:"port" json:"port"`
-	SecretKey string `bson:"secret_key" json:"secret_key"`
-	DBName string `bson:"db_name" json:"db_name"`
+	UrlMain string
+	MongoUri string
+	Port string
+	SecretKey string
+	DBName string
 }
 
 func Config() *config {
 	return &config{
+		UrlMain: os.Getenv("URL_MAIN"),
 		MongoUri: os.Getenv("MONGO_URI"),
 		Port: ":" + os.Getenv("PORT"),
 		SecretKey: os.Getenv("SECRET_KEY"),

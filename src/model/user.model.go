@@ -7,21 +7,36 @@ import (
 	"go.mongodb.org/mongo-driver/bson"
 	"go.mongodb.org/mongo-driver/bson/primitive"
 	"go.mongodb.org/mongo-driver/mongo"
+	"strings"
 	"time"
 )
 
-type user struct {
-	db *mongo.Database
-	collection *mongo.Collection
-}
+type (
+	user struct {
+		db *mongo.Database
+		collection *mongo.Collection
+	}
+	IUser interface {
+		Create(userEntity entity.User) (result *mongo.InsertOneResult, err error)
+		FindAll() (users []entity.User, err error)
+		FindOne(ID primitive.ObjectID) (userEntity entity.User, err error)
+		UpdateByID(userEntity entity.User) (result *mongo.UpdateResult, err error)
+		RemoveByID(ID primitive.ObjectID) (result *mongo.UpdateResult, err error)
+	}
+)
 
 func NewUser(db *mongo.Database) *user {
 	return &user{db, db.Collection("users")}
 }
 
 func (u *user) Create(userEntity entity.User) (result *mongo.InsertOneResult, err error) {
+	userEntity.ID = primitive.NewObjectID()
+	userEntity.Name = strings.ToUpper(userEntity.Name)
+	userEntity.LastName = strings.ToUpper(userEntity.LastName)
+	userEntity.Rol = strings.ToUpper(userEntity.Rol)
 	userEntity.CreatedAt = time.Now()
 	userEntity.Active = true
+
 	result, err = u.collection.InsertOne(context.TODO(), &userEntity)
 	if err != nil {
 		return
