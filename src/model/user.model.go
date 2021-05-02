@@ -19,7 +19,7 @@ type (
 	IUser interface {
 		Create(userEntity entity.User) (result *mongo.InsertOneResult, err error)
 		FindAll() (users []entity.User, err error)
-		FindOne(ID primitive.ObjectID) (userEntity entity.User, err error)
+		FindOne(userDataInput entity.User) (userDataOut entity.User, err error)
 		UpdateByID(userEntity entity.User) (result *mongo.UpdateResult, err error)
 		RemoveByID(ID primitive.ObjectID) (result *mongo.UpdateResult, err error)
 	}
@@ -59,12 +59,13 @@ func (u *user) FindAll() (users []entity.User, err error) {
 	return
 }
 
-func (u *user) FindOne(ID primitive.ObjectID) (userEntity entity.User, err error) {
+func (u *user) FindOne(userDataInput entity.User) (userDataOut entity.User, err error) {
 	filter := bson.M{
-		"_id": ID,
+		"email": userDataInput.Email,
+		"password": userDataInput.Password,
 		"active": true,
 	}
-	err = u.collection.FindOne(context.TODO(), filter).Decode(&userEntity)
+	err = u.collection.FindOne(context.TODO(), filter).Decode(&userDataOut)
 	if err != nil {
 		return
 	}

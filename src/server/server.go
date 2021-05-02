@@ -20,6 +20,13 @@ func NewApp() *app {
 	}
 }
 
+func (a *app) ConfigDB() {
+	if !dbutil.CreateIndex("users", "email", true) ||
+		!dbutil.CreateIndex("users", "nick", true){
+		log.Fatalln("it was not possible to create the index")
+	}
+}
+
 func (a *app) Middlewares()  {
 	a.fiberApp.Use(logger.New())
 }
