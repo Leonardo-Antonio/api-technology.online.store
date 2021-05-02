@@ -6,3 +6,5 @@ vscode
 *.sh
 .env
 *.png
+src/certificate/*.rsa
+src/certificate/*.rsa.pub
