@@ -3,3 +3,4 @@ version: "3.3"
 services:
   api-technology-online-store:
     image:
+  database:
