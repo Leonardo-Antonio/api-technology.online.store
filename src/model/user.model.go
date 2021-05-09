@@ -2,6 +2,7 @@ package model
 
 import (
 	"context"
+	"fmt"
 	"github.com/Leonardo-Antonio/api-technology.online.store/src/entity"
 	"github.com/Leonardo-Antonio/api-technology.online.store/src/utils"
 	"go.mongodb.org/mongo-driver/bson"
@@ -13,7 +14,7 @@ import (
 
 type (
 	user struct {
-		db *mongo.Database
+		db         *mongo.Database
 		collection *mongo.Collection
 	}
 	IUser interface {
@@ -31,8 +32,8 @@ func NewUser(db *mongo.Database) *user {
 
 func (u *user) Create(userEntity entity.User) (result *mongo.InsertOneResult, err error) {
 	userEntity.ID = primitive.NewObjectID()
-	userEntity.Name = strings.ToUpper(userEntity.Name)
-	userEntity.LastName = strings.ToUpper(userEntity.LastName)
+	userEntity.Name = strings.Title(strings.ToLower(userEntity.Name))
+	userEntity.LastName = strings.Title(strings.ToLower(userEntity.LastName))
 	userEntity.Rol = strings.ToUpper(userEntity.Rol)
 	userEntity.CreatedAt = time.Now()
 	userEntity.Active = true
@@ -61,9 +62,9 @@ func (u *user) FindAll() (users []entity.User, err error) {
 
 func (u *user) FindOne(userDataInput entity.User) (userDataOut entity.User, err error) {
 	filter := bson.M{
-		"email": userDataInput.Email,
+		"email":    userDataInput.Email,
 		"password": userDataInput.Password,
-		"active": true,
+		"active":   true,
 	}
 	err = u.collection.FindOne(context.TODO(), filter).Decode(&userDataOut)
 	if err != nil {
@@ -73,10 +74,13 @@ func (u *user) FindOne(userDataInput entity.User) (userDataOut entity.User, err 
 }
 
 func (u *user) UpdateByID(userEntity entity.User) (result *mongo.UpdateResult, err error) {
+	userEntity.Name = strings.Title(strings.ToLower(userEntity.Name))
+	userEntity.LastName = strings.Title(strings.ToLower(userEntity.LastName))
+	userEntity.Rol = strings.ToUpper(userEntity.Rol)
 	userEntity.UpdatedAt = time.Now()
+	fmt.Println()
 	update := bson.M{
-		"$set":
-			userEntity,
+		"$set": userEntity,
 	}
 	result, err = u.collection.UpdateByID(context.TODO(), userEntity.ID, update)
 	if err != nil {
