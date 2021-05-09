@@ -6,7 +6,7 @@ import (
 	"github.com/dgrijalva/jwt-go"
 )
 
-func validateToken(t string) (entity.Claim, error) {
+func ValidateToken(t string) (entity.Claim, error) {
 	token, err := jwt.ParseWithClaims(t, &entity.Claim{}, verifyFunction)
 	if err != nil {
 		return entity.Claim{}, err

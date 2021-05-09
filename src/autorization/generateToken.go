@@ -8,13 +8,13 @@ import (
 
 func GenerateToken(user entity.User) (string, error) {
 	claim := entity.Claim{
-		Email: user.Email,
-		Name: user.Name,
+		Email:    user.Email,
+		Name:     user.Name,
 		LastName: user.LastName,
-		Nick: user.Nick,
-		StandardClaims : jwt.StandardClaims{
+		Nick:     user.Nick,
+		StandardClaims: jwt.StandardClaims{
 			ExpiresAt: time.Now().Add(time.Hour * 5).Unix(),
-			Issuer: "Leonardo-Antonio",
+			Issuer:    "Leonardo-Antonio",
 		},
 	}
 	token := jwt.NewWithClaims(jwt.SigningMethodRS256, claim)
