@@ -22,21 +22,22 @@ func NewApp() *app {
 
 func (a *app) ConfigDB() {
 	if !dbutil.CreateIndex("users", "email", true) ||
-		!dbutil.CreateIndex("users", "nick", true){
+		!dbutil.CreateIndex("users", "nick", true) ||
+		!dbutil.CreateIndex("categories", "name", true) {
 		log.Fatalln("it was not possible to create the index")
 	}
 }
 
-func (a *app) Middlewares()  {
+func (a *app) Middlewares() {
 	a.fiberApp.Use(logger.New())
 }
 
 func (a *app) Routes() {
 	db := dbutil.Connection()
 	router.User(model.NewUser(db), a.fiberApp)
+	router.Category(model.NewCategory(db), a.fiberApp)
 }
 
 func (a *app) Listening() {
 	log.Fatalln(a.fiberApp.Listen(utils.Config().Port))
 }
-
