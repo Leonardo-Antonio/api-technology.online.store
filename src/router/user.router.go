@@ -11,8 +11,9 @@ import (
 func User(storage model.IUser, app *fiber.App) {
 	controller := handler.NewUser(storage)
 	userGroup := app.Group(utils.Config().UrlMain + "users")
-	userGroup.Post("/sign-up", controller.Create)
-	userGroup.Delete("/:id", controller.RemoveByID)
-	userGroup.Post("/sign-in", controller.Login)
-	userGroup.Get("/", autorization.Middleware(), controller.GetAll)
+	userGroup.Post("/sign-in", controller.SignIn)
+	userGroup.Delete("/:id", autorization.Middleware(), controller.RemoveByID)
+	userGroup.Post("/log-in", controller.LogIn)
+	userGroup.Put("/", controller.Update)
+	userGroup.Get("", autorization.Middleware(), controller.GetAll)
 }
